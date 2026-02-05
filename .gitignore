@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build / output
+dist/
+build/
+.next/
+out/
+
+# Env and secrets (never commit)
+.env
+.env.*
+!.env.example
+
+# Logs and debug
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Coverage
+coverage/
+
+# Docker (optional)
+# *.log from containers

@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: auth_db
+    environment:
+      POSTGRES_USER: authuser
+      POSTGRES_PASSWORD: authpass
+      POSTGRES_DB: authdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  backend:
+    build: ./backend
+    container_name: auth_backend
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://authuser:authpass@db:5432/authdb
+      PORT: 3000
+      CORS_ORIGIN: http://localhost:3000
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET:-supersecretaccess}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET:-supersecretrefresh}
+    ports:
+      - "3001:3000"
+
+  frontend:
+    build: ./frontend
+    container_name: auth_frontend
+    depends_on:
+      - backend
+    environment:
+      # Browser runs on host, so API must be reachable at host port
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    ports:
+      - "3000:3000"
+
+volumes:
+  db_data:
