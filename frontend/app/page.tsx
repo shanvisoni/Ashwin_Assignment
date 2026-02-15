@@ -45,6 +45,12 @@ export default function HomePage() {
           <span className="font-semibold text-zinc-900 dark:text-zinc-50">Auth App</span>
           {user ? (
             <div className="flex items-center gap-3">
+              <Link
+                href="/media"
+                className="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 mr-2"
+              >
+                Media Gallery
+              </Link>
               <span className="text-sm text-zinc-600 dark:text-zinc-400">{user.email}</span>
               <button
                 type="button"
@@ -79,9 +85,15 @@ export default function HomePage() {
             <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mb-2">
               Welcome back
             </h1>
-            <p className="text-zinc-600 dark:text-zinc-400">
+            <p className="text-zinc-600 dark:text-zinc-400 mb-6">
               You are signed in as <strong>{user.email}</strong>.
             </p>
+            <Link
+              href="/media"
+              className="rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 transition-colors"
+            >
+              Go to Media Gallery &rarr;
+            </Link>
           </>
         ) : (
           <>

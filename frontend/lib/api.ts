@@ -66,3 +66,40 @@ export async function logout() {
 export async function getMe() {
   return apiFetch<MeResponse>('/auth/me');
 }
+
+export type UploadEntry = {
+  id: number;
+  user_id: number;
+  file_url: string;
+  file_type: string;
+  file_name: string;
+  created_at: string;
+};
+
+export async function uploadFile(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const url = getApiUrl('/uploads');
+  // Note: We do NOT set 'Content-Type' header here; fetch sets it with boundary for FormData
+  const res = await fetch(url, {
+    method: 'POST',
+    body: formData,
+    credentials: 'include',
+  });
+
+  let data;
+  try {
+    data = await res.json();
+
+  } catch { }
+
+  if (!res.ok) {
+    return { ok: false, status: res.status, error: data?.message || res.statusText, data };
+  }
+  return { ok: true, status: res.status, data: data as UploadEntry };
+}
+
+export async function getMyUploads() {
+  return apiFetch<UploadEntry[]>('/uploads/my-uploads');
+}

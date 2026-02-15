@@ -1,8 +1,8 @@
-import { Injectable, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Pool, QueryResultRow } from 'pg';
 
 @Injectable()
-export class DatabaseService implements OnModuleDestroy {
+export class DatabaseService implements OnModuleDestroy, OnModuleInit {
   private pool: Pool;
 
   constructor() {
@@ -18,6 +18,19 @@ export class DatabaseService implements OnModuleDestroy {
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 5000,
     });
+  }
+
+  async onModuleInit() {
+    await this.pool.query(`
+      CREATE TABLE IF NOT EXISTS uploads (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        file_url TEXT NOT NULL,
+        file_type VARCHAR(50) NOT NULL,
+        file_name VARCHAR(255) NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
   }
 
   async query<T extends QueryResultRow = QueryResultRow>(
